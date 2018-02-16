@@ -68,6 +68,11 @@ RUN apt-get update -q && \
     && printf "extension=blackfire.so\nblackfire.agent_socket=tcp://\${BLACKFIRE_HOST}:8707\n" > /etc/php/7.1/cli/conf.d/blackfire.ini \
     && printf "extension=blackfire.so\nblackfire.agent_socket=tcp://\${BLACKFIRE_HOST}:8707\n" > /etc/php/7.1/fpm/conf.d/blackfire.ini
 
+    # Sqreen
+    curl -s https://8dc0b36f0ea6f2f21b721765e10a7e02768cd1825b4551f4:@packagecloud.io/install/repositories/sqreen/sqreen/script.deb.sh | sudo bash \
+    && sudo apt-get install --no-install-recommends sqreen-agent sqreen-php-extension \
+    && sudo sqreen-installer config 1c02dc41509642208419f00db96501378049745e1a62401dbf957f27f8c07463
+
 COPY . /app
 
 COPY docker/prod/entrypoint.sh /usr/local/bin/entrypoint.sh
