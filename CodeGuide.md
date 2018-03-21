@@ -42,6 +42,5 @@
         - ...  
     - vendors
         - _materialize.scss
-    - shame.scss (code to put to clean)
     - app.scss
     
