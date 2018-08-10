@@ -5,7 +5,6 @@ import { Route, Switch } from 'react-router-dom';
 
 import DashboardReferentLayout from './js/referent_dashboard/containers/DashboardReferentLayout';
 import CitizenProjectLayout from './js/citizen_project/containers/CitizenProjectLayout';
-import CitizenProject from './js/citizen_project/containers/CitizenProject';
 
 import { history } from './js/store';
 import './App.css';
