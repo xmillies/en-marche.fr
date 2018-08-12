@@ -228,5 +228,7 @@
         </service>
 
         <service id="AppBundle\Security\ApiAuthenticationEntryPoint"/>
+
+        <service id="AppBundle\Command\ExportDepartmentDataCommand" />
     </services>
 </container>
