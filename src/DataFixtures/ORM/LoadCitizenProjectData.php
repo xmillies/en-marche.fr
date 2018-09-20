@@ -296,6 +296,7 @@ class LoadCitizenProjectData extends AbstractFixture implements FixtureInterface
         $manager->persist($this->getReference('adherent-12')->followCitizenProject($citizenProject11));
 
         $manager->persist($this->getReference('adherent-11')->administrateCitizenProject($citizenProject12));
+        $manager->persist($this->getReference('adherent-3')->followCitizenProject($citizenProject12));
 
         $manager->flush();
     }
