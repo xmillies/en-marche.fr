@@ -3,6 +3,7 @@
 namespace AppBundle\DataFixtures\ORM;
 
 use AppBundle\CitizenProject\CitizenProjectFactory;
+use AppBundle\Entity\CitizenProject;
 use AppBundle\Entity\NullablePostAddress;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -24,6 +25,7 @@ class LoadCitizenProjectData extends AbstractFixture implements FixtureInterface
     const CITIZEN_PROJECT_9_UUID = 'eacefe0b-ace6-4ed5-a747-61f874f165f6';
     const CITIZEN_PROJECT_10_UUID = 'ac98b08c-4e2d-4894-aa61-140b5be89645';
     const CITIZEN_PROJECT_11_UUID = '695af719-ccfb-4754-813b-6685c757a855';
+    const CITIZEN_PROJECT_12_UUID = '3251ff14-cb9e-4f50-aab4-c332e50e9ff1';
 
     use ContainerAwareTrait;
 
@@ -227,6 +229,23 @@ class LoadCitizenProjectData extends AbstractFixture implements FixtureInterface
         $citizenProject11->setImageName('default.png');
         $this->addReference('citizen-project-11', $citizenProject11);
 
+        $citizenProject12 = $citizenProjectFactory->createFromArray([
+            'uuid' => self::CITIZEN_PROJECT_12_UUID,
+            'name' => 'Un stage pour tous',
+            'subtitle' => 'Aider les collégiens à trouver un stage même sans réseau',
+            'category' => $this->getReference('cpc002'),
+            'problem_description' => 'Les collégiens ont parfois des difficultés à trouver un stage de découverte par manque de relations, de réseau.',
+            'proposed_solution' => 'Le projet a pour objectif de mettre en relation ces élèves avec un réseau de professionnels volontaires pour les accueillir.',
+            'required_means' => 'Les moyens en attente',
+            'created_by' => LoadAdherentData::ADHERENT_11_UUID,
+            'created_at' => '2018-09-19 18:34:18',
+            'address' => NullablePostAddress::createFrenchAddress('32 Boulevard Louis Guichoux', '13003-13203', 43.325534, 5.376733),
+            'turnkey_project' => $this->getReference('turnkey-project-education'),
+        ]);
+        $citizenProject12->setImageName('default.png');
+        $citizenProject12->approved('2018-09-19 19:34:18');
+        $this->addReference('citizen-project-12', $citizenProject12);
+
         $manager->persist($citizenProject1);
         $manager->persist($citizenProject2);
         $manager->persist($citizenProject3);
@@ -238,6 +257,7 @@ class LoadCitizenProjectData extends AbstractFixture implements FixtureInterface
         $manager->persist($citizenProject9);
         $manager->persist($citizenProject10);
         $manager->persist($citizenProject11);
+        $manager->persist($citizenProject12);
 
         // Make adherents join citizen projects
         $manager->persist($this->getReference('adherent-3')->administrateCitizenProject($citizenProject1, '2017-10-12 17:25:54'));
@@ -275,6 +295,8 @@ class LoadCitizenProjectData extends AbstractFixture implements FixtureInterface
 
         $manager->persist($this->getReference('adherent-12')->followCitizenProject($citizenProject11));
 
+        $manager->persist($this->getReference('adherent-11')->administrateCitizenProject($citizenProject12));
+
         $manager->flush();
     }
 
@@ -289,6 +311,7 @@ class LoadCitizenProjectData extends AbstractFixture implements FixtureInterface
             LoadAdherentData::class,
             LoadCitizenProjectCategoryData::class,
             LoadCitizenProjectSkillData::class,
+            LoadTurnkeyProjectData::class,
         ];
     }
 }

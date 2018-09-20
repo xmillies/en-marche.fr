@@ -49,8 +49,13 @@ class CitizenProjectFactory
             $data['turnkey_project'] ?? null,
             $data['slug'] ?? null,
             $data['status'] ?? CitizenProject::PENDING,
-            $data['skills'] ?? null
+            $data['approved_at'] ?? null,
+            $data['created_at'] ?? 'now'
         );
+
+        if (isset($data['skills'])) {
+            $citizenProject->setSkills($data['skills']);
+        }
 
         return $citizenProject;
     }

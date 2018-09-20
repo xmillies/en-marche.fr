@@ -57,6 +57,18 @@ abstract class BaseFile implements EntityFileInterface
      */
     protected $file;
 
+    public function __construct(
+        string $title = null,
+        string $slug = null,
+        string $extension = null,
+        string $path = null
+    ) {
+        $this->title = $title;
+        $this->slug = $slug;
+        $this->extension = $extension;
+        $this->path = $path;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
