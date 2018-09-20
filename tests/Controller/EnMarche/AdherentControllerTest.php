@@ -16,6 +16,7 @@ use AppBundle\Entity\Committee;
 use AppBundle\Entity\CitizenProject;
 use AppBundle\Entity\Reporting\EmailSubscriptionHistory;
 use AppBundle\Entity\SubscriptionType;
+use AppBundle\Entity\TurnkeyProject;
 use AppBundle\Entity\Unregistration;
 use AppBundle\Mailer\Message\AdherentContactMessage;
 use AppBundle\Mailer\Message\AdherentTerminateMembershipMessage;
@@ -736,6 +737,9 @@ class AdherentControllerTest extends WebTestCase
     {
         $this->authenticateAsAdherent($this->client, 'carl999@example.fr');
 
+        $turnkeyProject = $this->getTurnkeyProjectRepository()->findOneBy(['slug' => 'art-s-connection']);
+        $this->assertInstanceOf(TurnkeyProject::class, $turnkeyProject);
+
         $crawler = $this->client->request(Request::METHOD_GET, '/espace-adherent/creer-mon-projet-citoyen/art-s-connection');
         $this->assertStatusCode(Response::HTTP_OK, $this->client);
 
@@ -766,6 +770,8 @@ class AdherentControllerTest extends WebTestCase
         $this->assertSame('Les lieux et espaces de culture sont rarement accessibles à tous et donnent peu l\'occasion de tisser du lien social.', $citizenProject->getProblemDescription());
         $this->assertSame('Nous proposons d\'organiser des ateliers d\'art participatif associant des artistes aux citoyens', $citizenProject->getProposedSolution());
         $this->assertSame('Mes actions.', $citizenProject->getRequiredMeans());
+        $this->assertSame('Mouxy', $citizenProject->getDistrict());
+        $this->assertSame($turnkeyProject, $citizenProject->getTurnkeyProject());
 
         $this->logout($this->client);
 
@@ -778,7 +784,6 @@ class AdherentControllerTest extends WebTestCase
         $this->assertSame('Culture', $crawler->filter('#citizen_project_category_text')->text());
         $this->assertSame('Les lieux et espaces de culture sont rarement accessibles à tous et donnent peu l\'occasion de tisser du lien social.', $crawler->filter('#citizen_project_problem_description_text')->text());
         $this->assertSame('Nous proposons d\'organiser des ateliers d\'art participatif associant des artistes aux citoyens', $crawler->filter('#citizen_project_proposed_solution_text')->text());
-        $this->assertSame('Mouxy', $citizenProject->getDistrict());
 
         $form = $crawler->selectButton('Proposer mon projet')->form();
         $form->setValues([
@@ -802,6 +807,7 @@ class AdherentControllerTest extends WebTestCase
         $this->assertSame('Nous proposons d\'organiser des ateliers d\'art participatif associant des artistes aux citoyens', $citizenProject->getProposedSolution());
         $this->assertSame('Mes actions aussi.', $citizenProject->getRequiredMeans());
         $this->assertSame('Mon quartier', $citizenProject->getDistrict());
+        $this->assertSame($turnkeyProject, $citizenProject->getTurnkeyProject());
         $this->assertCount(1, $this->getEmailRepository()->findRecipientMessages(CitizenProjectCreationConfirmationMessage::class, 'referent@en-marche-dev.fr'));
     }
 

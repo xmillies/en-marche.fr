@@ -35,10 +35,18 @@ SQL
         );
         $this->addSql('ALTER TABLE turnkey_projects_has_files ADD CONSTRAINT FK_B851654CB5315DF4 FOREIGN KEY (turnkey_project_id) REFERENCES turnkey_projects (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE turnkey_projects_has_files ADD CONSTRAINT FK_B851654C7D06E1CD FOREIGN KEY (turnkey_project_file_id) REFERENCES turnkey_projects_files (id) ON DELETE CASCADE');
+
+        $this->addSql('ALTER TABLE citizen_projects ADD turnkey_project_id INT UNSIGNED DEFAULT NULL');
+        $this->addSql('ALTER TABLE citizen_projects ADD CONSTRAINT FK_6514902B5315DF4 FOREIGN KEY (turnkey_project_id) REFERENCES turnkey_projects (id) ON DELETE SET NULL');
+        $this->addSql('CREATE INDEX IDX_6514902B5315DF4 ON citizen_projects (turnkey_project_id)');
     }
 
     public function down(Schema $schema): void
     {
+        $this->addSql('ALTER TABLE citizen_projects DROP FOREIGN KEY FK_6514902B5315DF4');
+        $this->addSql('DROP INDEX IDX_6514902B5315DF4 ON citizen_projects');
+        $this->addSql('ALTER TABLE citizen_projects DROP turnkey_project_id');
+
         $this->addSql('ALTER TABLE turnkey_projects_has_files DROP FOREIGN KEY FK_B851654C7D06E1CD');
         $this->addSql('DROP TABLE turnkey_projects_files');
         $this->addSql('DROP TABLE turnkey_projects_has_files');

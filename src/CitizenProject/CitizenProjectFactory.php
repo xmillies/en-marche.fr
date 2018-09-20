@@ -46,6 +46,7 @@ class CitizenProjectFactory
             $phone,
             $data['address'],
             $data['district'] ?? null,
+            $data['turnkey_project'] ?? null,
             $data['slug'] ?? null,
             $data['status'] ?? CitizenProject::PENDING,
             $data['skills'] ?? null
@@ -70,7 +71,8 @@ class CitizenProjectFactory
             $command->requiredMeans,
             $command->getCommittees()->toArray(),
             $command->getAddress() ? $this->addressFactory->createFromNullableAddress($command->getAddress()) : null,
-            $command->getDistrict()
+            $command->getDistrict(),
+            $command->getTurnkeyProject()
         );
 
         $citizenProject->setSkills($command->getSkills());
