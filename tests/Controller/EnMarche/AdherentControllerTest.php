@@ -722,7 +722,7 @@ class AdherentControllerTest extends WebTestCase
         $this->assertInstanceOf(CitizenProject::class, $citizenProject);
         $this->assertSame('Mon Projet Citoyen', $citizenProject->getName());
         $this->assertSame('Mon premier projet citoyen', $citizenProject->getSubtitle());
-        $this->assertCount(1, $this->getEmailRepository()->findRecipientMessages(CitizenProjectCreationConfirmationMessage::class, 'carl999@example.fr'));
+        $this->assertCountMails(1, CitizenProjectCreationConfirmationMessage::class, 'carl999@example.fr');
     }
 
     public function testAdherentCanCreateNewCitizenProjectEventTurnkeyProjectDoesNotExist(): void
