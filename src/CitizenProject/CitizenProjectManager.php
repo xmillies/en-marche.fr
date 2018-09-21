@@ -10,6 +10,7 @@ use AppBundle\Entity\CitizenAction;
 use AppBundle\Entity\CitizenProject;
 use AppBundle\Entity\CitizenProjectCommitteeSupport;
 use AppBundle\Entity\TurnkeyProject;
+use AppBundle\Events;
 use AppBundle\Geocoder\Coordinates;
 use AppBundle\Repository\CitizenActionRepository;
 use AppBundle\Entity\CitizenProjectMembership;
@@ -25,6 +26,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use League\Flysystem\Filesystem;
 use League\Glide\Server;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class CitizenProjectManager
@@ -32,6 +34,7 @@ class CitizenProjectManager
     public const CITIZEN_PROJECT_DEFAULT_IMAGE_NAME = 'default.png';
 
     private $registry;
+    private $dispatcher;
     private $storage;
     private $projectAuthority;
 
@@ -40,9 +43,14 @@ class CitizenProjectManager
      */
     private $glide;
 
-    public function __construct(RegistryInterface $registry, Filesystem $storage, CitizenProjectAuthority $projectAuthority)
-    {
+    public function __construct(
+        RegistryInterface $registry,
+        EventDispatcher $dispatcher,
+        Filesystem $storage,
+        CitizenProjectAuthority $projectAuthority
+    ) {
         $this->registry = $registry;
+        $this->dispatcher = $dispatcher;
         $this->storage = $storage;
         $this->projectAuthority = $projectAuthority;
     }
@@ -200,6 +208,9 @@ class CitizenProjectManager
         if ($flush) {
             $this->getManager()->flush();
         }
+
+        $this->dispatcher->dispatch(Events::CITIZEN_PROJECT_APPROVED, new CitizenProjectWasApprovedEvent($citizenProject));
+        $this->dispatchUpdate($citizenProject);
     }
 
     public function refuseCitizenProject(CitizenProject $citizenProject, bool $flush = true): void
@@ -213,6 +224,8 @@ class CitizenProjectManager
         if ($flush) {
             $this->getManager()->flush();
         }
+
+        $this->dispatchUpdate($citizenProject);
     }
 
     public function preRefuseCitizenProject(CitizenProject $citizenProject, bool $flush = true): void
@@ -222,6 +235,8 @@ class CitizenProjectManager
         if ($flush) {
             $this->getManager()->flush();
         }
+
+        $this->dispatchUpdate($citizenProject);
     }
 
     public function preApproveCitizenProject(CitizenProject $project, bool $flush = true): void
@@ -231,6 +246,8 @@ class CitizenProjectManager
         if ($flush) {
             $this->getManager()->flush();
         }
+
+        $this->dispatchUpdate($project);
     }
 
     public function followCitizenProject(Adherent $adherent, CitizenProject $citizenProject, bool $flush = true): void
@@ -241,6 +258,12 @@ class CitizenProjectManager
         if ($flush) {
             $manager->flush();
         }
+
+        $this->dispatcher->dispatch(
+            Events::CITIZEN_PROJECT_FOLLOWER_ADDED,
+            new CitizenProjectFollowerAddedEvent($citizenProject, $adherent)
+        );
+        $this->dispatchUpdate($citizenProject);
     }
 
     public function unfollowCitizenProject(Adherent $adherent, CitizenProject $citizenProject, bool $flush = true): void
@@ -257,6 +280,8 @@ class CitizenProjectManager
         if ($flush) {
             $manager->flush();
         }
+
+        $this->dispatchUpdate($citizenProject);
     }
 
     public function findAdherentNearCitizenProjectOrAcceptAllNotification(CitizenProject $citizenProject, int $offset = 0, bool $excludeSupervisor = true, int $radius = CitizenProjectMessageNotifier::RADIUS_NOTIFICATION_NEAR_PROJECT_CITIZEN): Paginator
@@ -412,5 +437,10 @@ class CitizenProjectManager
             ->getCitizenProjectCommitteeSupportRepository()
             ->findOneByCommitteeAndCitizenProject($committee, $citizenProject)
         ;
+    }
+
+    private function dispatchUpdate(CitizenProject $citizenProject): void
+    {
+        $this->dispatcher->dispatch(Events::CITIZEN_PROJECT_UPDATED, new CitizenProjectWasUpdatedEvent($citizenProject));
     }
 }

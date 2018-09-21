@@ -23,7 +23,6 @@ class CitizenProjectManagementAuthority
     public function approve(CitizenProject $citizenProject): void
     {
         $this->manager->approveCitizenProject($citizenProject);
-        $this->eventDispatcher->dispatch(Events::CITIZEN_PROJECT_APPROVED, new CitizenProjectWasApprovedEvent($citizenProject));
     }
 
     public function refuse(CitizenProject $citizenProject): void
@@ -44,10 +43,5 @@ class CitizenProjectManagementAuthority
     public function followCitizenProject(Adherent $adherent, CitizenProject $citizenProject): void
     {
         $this->manager->followCitizenProject($adherent, $citizenProject);
-
-        $this->eventDispatcher->dispatch(
-            Events::CITIZEN_PROJECT_FOLLOWER_ADDED,
-            new CitizenProjectFollowerAddedEvent($citizenProject, $adherent)
-        );
     }
 }

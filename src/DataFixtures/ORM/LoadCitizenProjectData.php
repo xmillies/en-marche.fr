@@ -3,6 +3,7 @@
 namespace AppBundle\DataFixtures\ORM;
 
 use AppBundle\CitizenProject\CitizenProjectFactory;
+use AppBundle\DataFixtures\AutoIncrementResetter;
 use AppBundle\Entity\CitizenProject;
 use AppBundle\Entity\NullablePostAddress;
 use Doctrine\Common\DataFixtures\AbstractFixture;
@@ -32,6 +33,8 @@ class LoadCitizenProjectData extends AbstractFixture implements FixtureInterface
 
     public function load(ObjectManager $manager)
     {
+        AutoIncrementResetter::resetAutoIncrement($manager, 'citizen_projects');
+
         // Add CitizenProject default image
         $storage = $this->container->get('app.storage');
         $storage->put('images/citizen_projects/default.png', file_get_contents(__DIR__.'/../citizen-projects/default.png'));
