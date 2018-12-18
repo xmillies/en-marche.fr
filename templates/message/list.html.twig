@@ -1,0 +1,30 @@
+{% extends 'message/layout.html.twig' %}
+
+{% block message_content %}
+    <table>
+        <thead>
+            <tr>
+                <th>Label</th>
+                <th>Objet</th>
+                <th>Date de creation</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for message in messages %}
+                <tr>
+                    <td>{{ message.label }}</td>
+                    <td>{{ message.subject }}</td>
+                    <td>{{ message.createdAt|date }}</td>
+                    <td>
+                        <a class="link--no-decor" href="{{ path('app_message_update', {uuid: message.uuid}) }}"><i class="fa fa-edit"></i> Modifier</a>
+                        <br/>
+                        <a class="link--no-decor" href="{{ path('app_message_preview', {uuid: message.uuid}) }}"><i class="fa fa-eye"></i> Visualiser</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="4">Vous n'avez aucun message</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

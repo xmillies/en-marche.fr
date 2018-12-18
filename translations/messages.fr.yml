@@ -496,3 +496,6 @@ payment.message.holder_number_invalid: Votre numéro de carte semble être erron
 payment.message.card_issuer_invalid: Votre banque semble ne pas être reconnue par le système. Nous vous invitons à la contacter pour obtenir plus d'informations.
 payment.message.expiry_data_passed: La date de validité de votre carte semble être dépassée. Nous vous invitons à retenter l'opération avec un autre moyen de paiement.
 payment.message.card_absent: Votre carte bancaire semble ne pas être reconnue par le système. Nous vous invitons à contacter votre banque pour obtenir plus d'informations.
+
+message:
+    created_successfully: 'Votre message a bien ete cree.'

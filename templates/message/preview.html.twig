@@ -1,0 +1,14 @@
+{% extends 'message/layout.html.twig' %}
+
+{% block message_actions %}
+    <a href="{{ path('app_message_list') }}" class="btn">Retourner à la liste</a>
+    {{ parent() }}
+    <a href="{{ path('app_message_update', {uuid: message.uuid}) }}" class="btn">Modifier</a>
+    <a href="#" class="btn">Envoyer</a>
+{% endblock %}
+
+{% block message_content %}
+    <hr/>
+    <iframe src="{{ path('app_message_content', {uuid: message.uuid}) }}"></iframe>
+    <hr/>
+{% endblock %}

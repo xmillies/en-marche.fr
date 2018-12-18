@@ -3,6 +3,8 @@
 namespace AppBundle\Mailchimp\Synchronisation;
 
 use AppBundle\Entity\Adherent;
+use AppBundle\Entity\Message;
+use AppBundle\Mailchimp\Exception\InvalidCampaignIdException;
 use AppBundle\Mailchimp\Synchronisation\Message\AdherentMessageInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -41,5 +43,14 @@ class Manager implements LoggerAwareInterface
                 $this->logger->info(sprintf('Mailchimp member "%s" has been updated', $adherent->getUuidAsString()));
             }
         }
+    }
+
+    public function getContent(Message $message): string
+    {
+        if (!$message->getExternalId()) {
+            throw new InvalidCampaignIdException(sprintf('Message "%s" does not have a valid campaign id', $message->getUuid()));
+        }
+
+        return $this->driver->getCampaignContent($message->getExternalId());
     }
 }

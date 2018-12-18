@@ -6,6 +6,7 @@ use AppBundle\Mailchimp\Synchronisation\Request\MemberRequest;
 use AppBundle\Mailchimp\Synchronisation\Request\MemberTagsRequest;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
@@ -46,23 +47,46 @@ class Driver implements LoggerAwareInterface
         );
     }
 
+    public function getCampaignContent(string $campaignId): string
+    {
+        $response = $this->send('GET', sprintf('/campaigns/%s/content', $campaignId));
+
+        if ($this->isSuccessfulResponse($response)) {
+            return \GuzzleHttp\json_decode((string) $response->getBody(), true)['html'] ?? '';
+        }
+
+        $this->logger->warning(sprintf('[API] Error: %s', $response->getBody()), ['campaignId' => $campaignId]);
+
+        return '';
+    }
+
     private function sendRequest(string $method, string $uri, array $body = []): bool
     {
+        $response = $this->send($method, $uri, $body);
+
+        return $this->isSuccessfulResponse($response);
+    }
+
+    private function send(string $method, string $uri, array $body = []): ResponseInterface
+    {
         try {
-            $response = $this->client->request(
+            return $this->client->request(
                 $method,
                 '/3.0'.$uri,
                 ($body && \in_array($method, ['POST', 'PUT', 'PATCH'], true) ? ['json' => $body] : [])
             );
-
-            return 200 <= $response->getStatusCode() && $response->getStatusCode() < 300;
         } catch (RequestException $e) {
             $this->logger->warning(sprintf(
                 '[API] Error: %s',
                 ($response = $e->getResponse()) ? $response->getBody() : 'Unknown'
             ), ['exception' => $e]);
-        }
 
-        return false;
+            return $e->getResponse();
+        }
+    }
+
+    private function isSuccessfulResponse(ResponseInterface $response): bool
+    {
+        return 200 <= $response->getStatusCode() && $response->getStatusCode() < 300;
     }
 }

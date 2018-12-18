@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block page_title 'Esapce messagerie' %}
+
+{% block content %}
+    <main>
+        <section class="deputy procuration-manager b__nudge--bottom-huge">
+            <header class="l__wrapper--slim b__nudge--bottom-large">
+                <h1 class="text--center text--large">
+                    {{ block('page_title') }}
+                </h1>
+                <div class="text--center">
+                    {% block message_actions %}
+                        <a href="{{ path("app_message_create") }}" class="btn btn--blue">Creer un nouveau message</a>
+                    {% endblock %}
+                </div>
+            </header>
+            <div class="l__wrapper procuration-manager__content">
+                {% block message_content %}{% endblock %}
+            </div>
+        </section>
+    </main>
+{% endblock %}

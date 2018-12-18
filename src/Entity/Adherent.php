@@ -396,6 +396,10 @@ class Adherent implements UserInterface, UserEntityInterface, GeoPointInterface,
             $roles[] = 'ROLE_CITIZEN_PROJECT_ADMINISTRATOR';
         }
 
+        if ($this->isDeputy() || $this->isReferent()) {
+            $roles[] = 'ROLE_MESSAGE_COM';
+        }
+
         return array_merge($roles, $this->roles);
     }
 
