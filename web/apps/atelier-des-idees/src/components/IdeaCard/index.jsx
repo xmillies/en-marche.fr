@@ -2,6 +2,7 @@ import React from 'react';
 import { ideaStatus } from '../../constants/api';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { Link, NavLink } from 'react-router-dom';
 
 import VotingFooter from './VotingFooter';
 import ContributingFooter from './ContributingFooter';
@@ -67,69 +68,71 @@ class IdeaCard extends React.Component {
     render() {
         return (
             <div className="idea-card" ref={this.cardRef}>
-                <div className="idea-card__main">
-                    <div className="idea-card__content">
-                        <p className="idea-card__content__title">{this.props.name}</p>
-                        <div className="idea-card__content__infos">
-                            <span className="idea-card__content__infos__author">
-                                <span className="idea-card__content__infos__meta">Par </span>
-                                <span className="idea-card__content__infos__author__name">
-                                    {this.props.author.first_name} {this.props.author.last_name}
+                <Link to={`note/${this.props.uuid}`}>
+                    <div className="idea-card__main">
+                        <div className="idea-card__content">
+                            <p className="idea-card__content__title">{this.props.name}</p>
+                            <div className="idea-card__content__infos">
+                                <span className="idea-card__content__infos__author">
+                                    <span className="idea-card__content__infos__meta">Par </span>
+                                    <span className="idea-card__content__infos__author__name">
+                                        {this.props.author.first_name} {this.props.author.last_name}
+                                    </span>
+                                    <span className="idea-card__content__infos__author__separator" />
+                                    <span
+                                        className={classnames(
+                                            'idea-card__content__infos__author__type',
+                                            `idea-card__content__infos__author__type--${this.props.author_category}`
+                                        )}>
+                                        {AUTHOR_CATEGORY_NAMES[this.props.author_category]}
+                                    </span>
                                 </span>
-                                <span className="idea-card__content__infos__author__separator" />
-                                <span
-                                    className={classnames(
-                                        'idea-card__content__infos__author__type',
-                                        `idea-card__content__infos__author__type--${this.props.author_category}`
-                                    )}>
-                                    {AUTHOR_CATEGORY_NAMES[this.props.author_category]}
-                                </span>
-                            </span>
-                            {/* <span className="idea-card__content__infos__date">
+                                {/* <span className="idea-card__content__infos__date">
                             {new Date(this.props.created_at).toLocaleDateString()}
                                 </span>*/}
-                            {'QG' !== this.props.author_category && (
-                                <div className="idea-card__content__infos__ideas">
-                                    <span className="idea-card__content__infos__ideas__contributors">
-                                        <img
-                                            className="idea-card__content__infos__ideas__ontributors__icon"
-                                            src={icn_20px_contributors}
-                                        />
-                                        <span className="idea-card__content__infos__ideas__contributors__text">
-                                            {this.props.contributors_count}
+                                {'QG' !== this.props.author_category && (
+                                    <div className="idea-card__content__infos__ideas">
+                                        <span className="idea-card__content__infos__ideas__contributors">
+                                            <img
+                                                className="idea-card__content__infos__ideas__ontributors__icon"
+                                                src={icn_20px_contributors}
+                                            />
+                                            <span className="idea-card__content__infos__ideas__contributors__text">
+                                                {this.props.contributors_count}
+                                            </span>
                                         </span>
-                                    </span>
-                                    <span className="idea-card__content__infos__ideas__comments">
-                                        <img
-                                            className="idea-card__content__infos__ideas__contributors__icon"
-                                            src={icn_20px_comments}
-                                        />
-                                        <span className="idea-card__content__infos__ideas__contributors__text">
-                                            {this.props.comments_count}
+                                        <span className="idea-card__content__infos__ideas__comments">
+                                            <img
+                                                className="idea-card__content__infos__ideas__contributors__icon"
+                                                src={icn_20px_comments}
+                                            />
+                                            <span className="idea-card__content__infos__ideas__contributors__text">
+                                                {this.props.comments_count}
+                                            </span>
                                         </span>
-                                    </span>
-                                </div>
+                                    </div>
+                                )}
+                            </div>
+                            <p className="idea-card__content__description">{this.props.description}</p>
+                            {!!this.props.themes.length && (
+                                <ul className="idea-card__content__tags">
+                                    {/* TODO: check what to do with category */}
+                                    {/* <li className="idea-card__content__tags__item">{this.props.category.name}</li>*/}
+                                    {this.props.themes.map((theme, index) => (
+                                        <li key={`theme__${index}`} className="idea-card__content__tags__item">
+                                            {theme.name}
+                                        </li>
+                                    ))}
+                                </ul>
                             )}
                         </div>
-                        <p className="idea-card__content__description">{this.props.description}</p>
-                        {!!this.props.themes.length && (
-                            <ul className="idea-card__content__tags">
-                                {/* TODO: check what to do with category */}
-                                {/* <li className="idea-card__content__tags__item">{this.props.category.name}</li>*/}
-                                {this.props.themes.map((theme, index) => (
-                                    <li key={`theme__${index}`} className="idea-card__content__tags__item">
-                                        {theme.name}
-                                    </li>
-                                ))}
-                            </ul>
+                        {!!this.props.themes.length && this.props.themes[0].thumbnail && (
+                            <div className="idea-card__theme">
+                                <img className="idea-card__theme__icon" src={this.props.themes[0].thumbnail} />
+                            </div>
                         )}
                     </div>
-                    {!!this.props.themes.length && this.props.themes[0].thumbnail && (
-                        <div className="idea-card__theme">
-                            <img className="idea-card__theme__icon" src={this.props.themes[0].thumbnail} />
-                        </div>
-                    )}
-                </div>
+                </Link>
                 {/* FOOTER */}
                 {'FINALIZED' === this.props.status ? (
                     <VotingFooter
