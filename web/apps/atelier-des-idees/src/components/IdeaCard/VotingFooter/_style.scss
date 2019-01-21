@@ -49,6 +49,18 @@
 		}
 	}
 
+	&__vote--animation {
+		color: $blue;
+		position: relative;
+		bottom: 20px;
+		transition: all 0.8s;
+
+		&--is-animated {
+			bottom: 40px;
+			transition: all 0.8s;
+		}
+	}
+
 	&__vote {
 		cursor: pointer;
 		outline: none;
