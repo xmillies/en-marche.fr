@@ -13,6 +13,7 @@ import {
     goBackFromCurrentIdea,
 } from '../../redux/thunk/currentIdea';
 import { reportIdea } from '../../redux/thunk/ideas';
+import { selectMyContributions } from '../../redux/selectors/myContributions';
 import { selectAuthUser, selectIsAuthenticated } from '../../redux/selectors/auth';
 import { selectLoadingState } from '../../redux/selectors/loading';
 import { selectCurrentIdea, selectGuidelines } from '../../redux/selectors/currentIdea';
@@ -24,6 +25,8 @@ class IdeaPage extends React.Component {
     }
 
     render() {
+        console.log(this.props.myContributions);
+
         if (this.props.hasFetchError) {
             // redirect to home is error in fetch
             return <Redirect to="/atelier-des-idees" />;
@@ -66,7 +69,7 @@ function mapStateToProps(state, ownProps) {
         publishedAt: published_at && new Date(published_at).toLocaleDateString(),
     };
     const isAuthenticated = selectIsAuthenticated(state);
-
+    const myContributions = selectMyContributions(state);
     return {
         idea: formattedIdea,
         guidelines,
@@ -74,6 +77,7 @@ function mapStateToProps(state, ownProps) {
         isAuthenticated,
         hasFetchError: fetchIdeaState.isError,
         isFetchingIdea: fetchIdeaState.isFetching,
+        myContributions,
     };
 }
 
