@@ -23,7 +23,7 @@ Feature:
     {
         "metadata": {
             "total_items": 2,
-            "items_per_page": 2,
+            "items_per_page": 5,
             "count": 2,
             "current_page": 1,
             "last_page": 1
@@ -117,7 +117,7 @@ Feature:
     {
         "metadata": {
             "total_items": 2,
-            "items_per_page": 2,
+            "items_per_page": 5,
             "count": 2,
             "current_page": 1,
             "last_page": 1
@@ -226,7 +226,7 @@ Feature:
     {
         "metadata": {
             "total_items": 1,
-            "items_per_page": 2,
+            "items_per_page": 5,
             "count": 1,
             "current_page": 1,
             "last_page": 1
@@ -294,7 +294,7 @@ Feature:
     {
         "metadata": {
             "total_items": 1,
-            "items_per_page": 2,
+            "items_per_page": 5,
             "count": 1,
             "current_page": 1,
             "last_page": 1
@@ -358,7 +358,7 @@ Feature:
 
   Scenario: As a non logged-in user I can filter ideas by theme
     Given I add "Accept" header equal to "application/json"
-    When I send a "GET" request to "/api/ideas-workshop/ideas?themes.name=ecologie"
+    When I send a "GET" request to "/api/ideas-workshop/ideas?themes.name=ecologie&page_size=2"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON should be equal to:
@@ -452,7 +452,7 @@ Feature:
 
   Scenario: As a non logged-in user I can filter ideas by category's name
     Given I add "Accept" header equal to "application/json"
-    When I send a "GET" request to "/api/ideas-workshop/ideas?category.name=Echelle Européenne"
+    When I send a "GET" request to "/api/ideas-workshop/ideas?category.name=Echelle Européenne&page_size=2"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON should be equal to:
@@ -556,7 +556,7 @@ Feature:
     {
         "metadata": {
             "total_items": 1,
-            "items_per_page": 2,
+            "items_per_page": 5,
             "count": 1,
             "current_page": 1,
             "last_page": 1
@@ -613,7 +613,7 @@ Feature:
     {
        "metadata":{
           "total_items":2,
-          "items_per_page":2,
+          "items_per_page":5,
           "count":2,
           "current_page":1,
           "last_page":1
@@ -1001,7 +1001,7 @@ Feature:
     {
        "metadata":{
           "total_items":2,
-          "items_per_page":2,
+          "items_per_page":5,
           "count":2,
           "current_page":1,
           "last_page":1
@@ -1115,7 +1115,7 @@ Feature:
     {
        "metadata":{
           "total_items":2,
-          "items_per_page":2,
+          "items_per_page":5,
           "count":2,
           "current_page":1,
           "last_page":1
@@ -1690,7 +1690,7 @@ Feature:
 
   Scenario: As a non logged-in user I can order ideas by publishedAt property
     Given I add "Accept" header equal to "application/json"
-    When I send a "GET" request to "/api/ideas-workshop/ideas?order[publishedAt]=asc"
+    When I send a "GET" request to "/api/ideas-workshop/ideas?order[publishedAt]=asc&page_size=2"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON should be equal to:
@@ -1788,7 +1788,7 @@ Feature:
 
   Scenario: As a non logged-in user I can order ideas by number of comments
     Given I add "Accept" header equal to "application/json"
-    When I send a "GET" request to "/api/ideas-workshop/ideas?commentsCount=asc"
+    When I send a "GET" request to "/api/ideas-workshop/ideas?commentsCount=asc&page_size=2"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON should be equal to:
@@ -1889,7 +1889,7 @@ Feature:
 
   Scenario: As a non logged-in user I can order ideas by number of votes
     Given I add "Accept" header equal to "application/json"
-    When I send a "GET" request to "/api/ideas-workshop/ideas?order[votesCount]=asc"
+    When I send a "GET" request to "/api/ideas-workshop/ideas?order[votesCount]=asc&page_size=2"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON should be equal to:
@@ -1987,7 +1987,7 @@ Feature:
 
   Scenario: As a non logged-in user I can order ideas by number of contributors
     Given I add "Accept" header equal to "application/json"
-    When I send a "GET" request to "/api/ideas-workshop/ideas?contributorsCount=asc?page=2"
+    When I send a "GET" request to "/api/ideas-workshop/ideas?contributorsCount=asc&page_size=2"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON should be equal to:
@@ -2091,7 +2091,7 @@ Feature:
     {
        "metadata":{
           "total_items":1,
-          "items_per_page":2,
+          "items_per_page":5,
           "count":1,
           "current_page":1,
           "last_page":1

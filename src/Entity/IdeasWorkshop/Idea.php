@@ -152,6 +152,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
  *         }
  *     },
  *     attributes={
+ *         "pagination_items_per_page": 5,
  *         "normalization_context": {"groups": {"idea_list_read"}},
  *         "denormalization_context": {
  *             "groups": {"idea_write"}
