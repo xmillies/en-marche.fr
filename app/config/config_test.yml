@@ -92,7 +92,6 @@ security:
 old_sound_rabbit_mq:
     connections:
         default:
-            vhost: '/test'
             read_write_timeout: 40
             heartbeat: 20
 

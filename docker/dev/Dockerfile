@@ -68,6 +68,7 @@ RUN apt-get update -q && \
     tar xfvz /tmp/nodejs.tar.gz -C /usr/local --strip-components=1 && \
     rm -f /tmp/nodejs.tar.gz && \
     npm install yarn -g && \
+    npm config set scripts-prepend-node-path true && \
 
     mkdir /run/php
 

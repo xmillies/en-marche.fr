@@ -1,6 +1,29 @@
 version: 2
 
 references:
+    configure_environment: &configure_environment
+        docker:
+            - image: remg/en-marche.fr:latest
+              auth:
+                  username: $DOCKER_USER
+                  password: $DOCKER_PASSWORD
+            - image: redis:3.2
+            - image: mysql:5.7.14
+              environment:
+                  MYSQL_ROOT_PASSWORD: root
+            - image: selenium/standalone-firefox-debug:2.53.1
+              shm_size: 2g
+              environment:
+                  REMOTE_HOST: http://127.0.0.1:80
+            - image: rabbitmq:3-management
+
+        working_directory: ~/app
+        environment:
+            APP_ENV: test
+            DATABASE_HOST: 127.0.0.1
+            REDIS_HOST: 'redis://127.0.0.1'
+            RABBITMQ_HOST: 127.0.0.1
+
     working_directory: &working_directory
         working_directory: ~/app
 
@@ -8,189 +31,149 @@ references:
         attach_workspace:
             at: ~/app
 
-    configure_base: &configure_base
-        environment:
-            - DOCKER_COMPOSE: "docker-compose -f docker-compose.yml -f docker-compose.ci.yml"
-            - EXEC: "$(DOCKER_COMPOSE) exec -T app"
-        machine:
-            enabled: true
-            image: circleci/classic:201711-01
-
-    generate_docker_hashes: &generate_docker_hashes
+    prepare_database: &prepare_database
         run: |
-            test -e docker-dev.md5 || find docker/dev -type f -exec md5sum {} \; | sort -k 2 > docker-dev.md5
-            echo 'export APP_DOCKER_IMAGE_NAME=eu.gcr.io/${GCLOUD_PROJECT}/app' >> $BASH_ENV
-            echo 'export APP_DOCKER_IMAGE_MD5=$(md5sum docker-dev.md5 | cut -f1 -d" ")' >> $BASH_ENV
+            php -r "set_time_limit(60);for(;;){if(@fsockopen('127.0.0.1',3306)){break;}echo \"Waiting for MySQL\n\";sleep(1);}"
 
-    authenticate_on_registry: &authenticate_on_registry
+            bin/console doctrine:database:drop --env=test --force --if-exists
+            bin/console doctrine:database:create --env=test
+            bin/console doctrine:database:import -n --env=test -- dump/dump-2018.sql
+            bin/console doctrine:migration:migrate -n --env=test
+            bin/console doctrine:schema:validate --env=test
+            bin/console doctrine:fixtures:load -n --env=test
+
+    prepare_rabbitmq: &prepare_rabbitmq
         run: |
-            set -x
+            php -r "set_time_limit(60);for(;;){if(@fsockopen('127.0.0.1',5672)){break;}echo \"Waiting for RabbitMQ\n\";sleep(1);}"
 
-            echo $GCLOUD_SERVICE_KEY | base64 --decode > $HOME/gcloud-service-key.json && cp $HOME/gcloud-service-key.json ./gcloud-service-key.json
-            gcloud auth activate-service-account --key-file $HOME/gcloud-service-key.json
-            gcloud config set project $GCLOUD_PROJECT
-
-    pull_docker_images: &pull_docker_images
-        run: gcloud docker -- pull $APP_DOCKER_IMAGE_NAME:$APP_DOCKER_IMAGE_MD5
-
-    start_containers: &start_containers
-        run: make up perm
+            bin/console --env=test rabbitmq:setup-fabric
 
 jobs:
     build:
         <<: *working_directory
-        <<: *configure_base
+        <<: *configure_environment
         steps:
             - checkout
 
-            - restore_cache:
-                  key: composer-{{ checksum "composer.lock" }}
-            - restore_cache:
-                  key: npm-{{ checksum "yarn.lock" }}
-
-            - *generate_docker_hashes
-            - *authenticate_on_registry
+            # Generate keys
             - run: |
-                set -x
+                  openssl genrsa -out var/private.key 1024
+                  openssl rsa -in var/private.key -pubout -out var/public.key
+                  chmod -R 777 var app/data/images app/data/files
+                  chmod 660 var/public.key var/private.key
 
-                gcloud docker -- pull $APP_DOCKER_IMAGE_NAME:dev || true
-                gcloud docker -- pull $APP_DOCKER_IMAGE_NAME:$APP_DOCKER_IMAGE_MD5 || true
-
-                make build
-
-                make up
-                make -j2 node_modules assets-prod assets-amp assets-apps var/public.key
-                make vendor cc
-
-                gcloud docker -- push $APP_DOCKER_IMAGE_NAME:$APP_DOCKER_IMAGE_MD5
-                gcloud container images add-tag $APP_DOCKER_IMAGE_NAME:$APP_DOCKER_IMAGE_MD5 $APP_DOCKER_IMAGE_NAME:dev --quiet
-
+            # Composer
+            - restore_cache:
+                  keys:
+                      - v1-deps-{{ checksum "composer.lock" }}
+            - run: composer install --dev --no-interaction
             - save_cache:
-                  paths:
-                      - ./vendor
-                  key: composer-{{ checksum "composer.lock" }}
-            - save_cache:
-                  paths:
-                      - ./node_modules
-                  key: npm-{{ checksum "yarn.lock" }}
+                  paths: [./vendor]
+                  key: v1-deps-{{ checksum "composer.lock" }}
 
+            # Prepare PHPUnit bridge
+            - restore_cache:
+                  keys:
+                      - v1-phpunit-{{ checksum "composer.lock" }}
+            - run: vendor/bin/phpunit --check-version
+            - save_cache:
+                  paths: [./vendor/bin/.phpunit]
+                  key: v1-phpunit-{{ checksum "composer.lock" }}
+
+            # Yarn
+            - restore_cache:
+                  key: yarn-packages-{{ checksum "yarn.lock" }}
+            - run: |
+                  yarn install
+                  yarn build-dev
+                  yarn build-prod
+                  yarn build-amp
+            - save_cache:
+                  key: yarn-packages-{{ checksum "yarn.lock" }}
+                  paths: [./node_modules]
+
+            # Save workspace
             - persist_to_workspace:
                   root: ./
-                  paths:
-                      - ./
+                  paths: [./]
 
-    lint:
+    php-cs:
         <<: *working_directory
-        <<: *configure_base
+        <<: *configure_environment
         steps:
             - *attach_workspace
-            - *generate_docker_hashes
-            - *authenticate_on_registry
-            - *pull_docker_images
-            - *start_containers
-            - run: |
-                set -x
 
-                make -j2 lint security-check
+            - run: php -d memory_limit=1024M vendor/bin/php-cs-fixer fix --dry-run --diff
+
+    security-check:
+        <<: *working_directory
+        <<: *configure_environment
+        steps:
+            - *attach_workspace
+
+            - run: vendor/bin/security-checker security:check
 
     phpunit:
         <<: *working_directory
-        <<: *configure_base
+        <<: *configure_environment
         steps:
             - *attach_workspace
-            - *generate_docker_hashes
-            - *authenticate_on_registry
-            - *pull_docker_images
-            - *start_containers
-            - run: |
-                set -x
+            - *prepare_database
+            - *prepare_rabbitmq
 
-                mkdir -p ./phpunit
-                make tfp-rabbitmq tfp-db
+            - run: vendor/bin/phpunit -vvv --log-junit ./phpunit/junit.xml
 
-                $DOCKER_COMPOSE exec app ./vendor/bin/phpunit --log-junit ./phpunit/junit.xml
             - store_test_results:
-                path: ./phpunit
+                  path: ./phpunit
 
     behat:
         <<: *working_directory
-        <<: *configure_base
-        parallelism: 2
+        <<: *configure_environment
+        parallelism: 4
         steps:
             - *attach_workspace
-            - *generate_docker_hashes
-            - *authenticate_on_registry
-            - *pull_docker_images
-            - *start_containers
+            - *prepare_database
+            - *prepare_rabbitmq
+
             - run: |
-                set -x
+                  set -x
 
-                mkdir -p ./behat
-                make -j2 tfp-rabbitmq tfp-db
+                  case $CIRCLE_NODE_INDEX in
+                      0)
+                          vendor/bin/behat --tags='@api' -vvv --colors -f progress -o std -f junit -o ./behat --
+                          ;;
+                      1)
+                          vendor/bin/behat --tags='@donation,@oauth' -vvv --colors -f progress -o std -f junit -o ./behat --
+                          ;;
+                      2)
+                          vendor/bin/behat --tags='@admin,@registration' -vvv --colors -f progress -o std -f junit -o ./behat --
+                          ;;
+                      3)
+                          vendor/bin/behat --tags='~@api&&~@donation&&~@oauth&&~@admin&&~@registration' -vvv --colors -f progress -o std -f junit -o ./behat --
+                          ;;
+                  esac
 
-                case $CIRCLE_NODE_INDEX in
-                    0)
-                        $DOCKER_COMPOSE exec app ./vendor/bin/behat --tags='@admin,@api,@donation,@oauth' -vvv --colors -f progress -o std -f junit -o ./behat --
-                        ;;
-                    1)
-                        $DOCKER_COMPOSE exec app ./vendor/bin/behat --tags='~@admin&&~@api&&~@donation&&~@oauth' -vvv --colors -f progress -o std -f junit -o ./behat --
-                        ;;
-                esac
             - store_test_results:
                 path: ./behat
 
-    deployment:
-        <<: *working_directory
-        docker:
-            - image: google/cloud-sdk
-        steps:
-            - *attach_workspace
-            - *authenticate_on_registry
-            - setup_remote_docker
-            - run: |
-                bash scripts/build.sh
-
 workflows:
     version: 2
-    test_deploy:
+    test:
         jobs:
             - build
 
-            - lint:
-                requires:
-                    - build
+            - php-cs:
+                  requires:
+                      - build
+
+            - security-check:
+                  requires:
+                      - build
+
             - phpunit:
-                requires:
-                    - build
+                  requires:
+                      - build
+
             - behat:
-                requires:
-                    - build
-
-            - deployment:
-                requires:
-                    - phpunit
-                    - behat
-                    - lint
-                filters:
-                    branches:
-                        only:
-                            - master
-                            - adi-react
-
-    prod_deploy:
-        jobs:
-            - build:
-                filters:
-                  branches:
-                      ignore: /.*/
-                  tags:
-                      only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
-
-            - deployment:
-                requires:
-                    - build
-                filters:
-                    branches:
-                        ignore: /.*/
-                    tags:
-                        only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+                  requires:
+                      - build
