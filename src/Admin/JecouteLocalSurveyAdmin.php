@@ -19,7 +19,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class JecouteSurveyAdmin extends AbstractAdmin
+class JecouteLocalSurveyAdmin extends AbstractAdmin
 {
     /** @var TranslatorInterface */
     protected $translator;
@@ -128,6 +128,9 @@ class JecouteSurveyAdmin extends AbstractAdmin
             ])
             ->add('city', null, [
                 'label' => 'Ville',
+            ])
+            ->add('getQuestionsCount', null, [
+                'label' => 'Questions',
             ])
             ->add('published', null, [
                 'label' => 'Publié',

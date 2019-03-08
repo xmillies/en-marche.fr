@@ -165,8 +165,8 @@ class ReferentController extends Controller
      */
     public function institutionalEventsAction(
         InstitutionalEventRepository $institutionalEventRepository,
-        ManagedInstitutionalEventsExporter $exporter
-    ): Response {
+        ManagedInstitutionalEventsExporter $exporter): Response
+    {
         return $this->render('referent/institutional_events/list.html.twig', [
             'managedInstitutionalEventsJson' => $exporter->exportAsJson(
                 $institutionalEventRepository->findByOrganizer($this->getUser())
@@ -181,8 +181,8 @@ class ReferentController extends Controller
     public function institutionalEventsCreateAction(
         Request $request,
         InstitutionalEventCommandHandler $institutionalEventCommandHandler,
-        GeoCoder $geoCoder
-    ): Response {
+        GeoCoder $geoCoder): Response
+    {
         $command = new InstitutionalEventCommand($this->getUser());
         $command->setTimeZone($geoCoder->getTimezoneFromIp($request->getClientIp()));
 
@@ -308,7 +308,7 @@ class ReferentController extends Controller
     ): Response {
         /** @var Adherent $user */
         $form = $this
-            ->createForm(SurveyFormType::class, new Survey($user))
+            ->createForm(SurveyFormType::class, new LocalSurvey($user))
             ->handleRequest($request)
         ;
 
@@ -339,7 +339,7 @@ class ReferentController extends Controller
      */
     public function jecouteSurveyEditAction(
         Request $request,
-        Survey $survey,
+        LocalSurvey $survey,
         ObjectManager $manager,
         SuggestedQuestionRepository $suggestedQuestionRepository
     ): Response {
@@ -376,7 +376,7 @@ class ReferentController extends Controller
      *
      * @Security("is_granted('IS_AUTHOR_OF', survey)")
      */
-    public function jecouteSurveyStatsAction(Survey $survey, StatisticsProvider $provider): Response
+    public function jecouteSurveyStatsAction(LocalSurvey $survey, StatisticsProvider $provider): Response
     {
         return $this->render('referent/surveys/stats.html.twig', [
             'data' => $provider->getStatsBySurvey($survey),
@@ -397,7 +397,7 @@ class ReferentController extends Controller
      *
      * @Security("is_granted('IS_AUTHOR_OF', survey)")
      */
-    public function jecouteSurveyDuplicateAction(Survey $survey, ObjectManager $manager): Response
+    public function jecouteSurveyDuplicateAction(LocalSurvey $survey, ObjectManager $manager): Response
     {
         $clonedSurvey = clone $survey;
 
@@ -425,6 +425,32 @@ class ReferentController extends Controller
     ): Response {
         return $this->render('referent/surveys/data_answers_dialog_content.html.twig', [
             'answers' => $dataAnswerRepository->findAllBySurveyQuestion($surveyQuestion),
+        ]);
+    }
+
+    /**
+     * @Route(
+     *     path="/jecoute/questionnaire/{uuid}/stats/download",
+     *     name="app_referent_survey_stats_download",
+     *     requirements={
+     *         "uuid": "%pattern_uuid%",
+     *     },
+     *     methods={"GET"},
+     * )
+     *
+     * @Entity("survey", expr="repository.findOneByUuid(uuid)")
+     *
+     * @Security("is_granted('IS_AUTHOR_OF', survey)")
+     */
+    public function jecouteSurveyStatsDownloadAction(
+        LocalSurvey $survey,
+        StatisticsExporter $statisticsExporter
+    ): Response {
+        $dataFile = $statisticsExporter->export($survey);
+
+        return new Response($dataFile['content'], Response::HTTP_OK, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment;filename="'.$dataFile['filename'].'"',
         ]);
     }
 
@@ -478,30 +504,6 @@ class ReferentController extends Controller
         return $this->render('referent/edit_referent_person_link.html.twig', [
             'form_referent_person_link' => $form->createView(),
             'person_organizational_chart_item' => $personOrganizationalChartItem,
-        ]);
-    }
-
-    /**
-     * @Route(
-     *     path="/jecoute/questionnaire/{uuid}/stats/download",
-     *     name="app_referent_survey_stats_download",
-     *     requirements={
-     *         "uuid": "%pattern_uuid%",
-     *     },
-     *     methods={"GET"},
-     * )
-     *
-     * @Entity("survey", expr="repository.findOneByUuid(uuid)")
-     *
-     * @Security("is_granted('IS_AUTHOR_OF', survey)")
-     */
-    public function jecouteSurveyStatsDownloadAction(Survey $survey, StatisticsExporter $statisticsExporter): Response
-    {
-        $dataFile = $statisticsExporter->export($survey);
-
-        return new Response($dataFile['content'], Response::HTTP_OK, [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment;filename="'.$dataFile['filename'].'"',
         ]);
     }
 }
