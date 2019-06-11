@@ -2,11 +2,14 @@
 
 namespace AppBundle\Entity;
 
+use Algolia\AlgoliaSearchBundle\Mapping\Annotation as Algolia;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\BannedAdherentRepository")
+ *
+ * @Algolia\Index(autoIndex=false)
  */
 class BannedAdherent
 {

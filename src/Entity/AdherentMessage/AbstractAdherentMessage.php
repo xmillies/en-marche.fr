@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity\AdherentMessage;
 
+use Algolia\AlgoliaSearchBundle\Mapping\Annotation as Algolia;
 use ApiPlatform\Core\Annotation\ApiResource;
 use AppBundle\AdherentMessage\AdherentMessageDataObject;
 use AppBundle\AdherentMessage\AdherentMessageStatusEnum;
@@ -40,6 +41,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *         }
  *     }
  * )
+ *
+ * @Algolia\Index(autoIndex=false)
  */
 abstract class AbstractAdherentMessage implements AdherentMessageInterface
 {

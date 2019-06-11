@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity\Jecoute;
 
+use Algolia\AlgoliaSearchBundle\Mapping\Annotation as Algolia;
 use AppBundle\Entity\Adherent;
 use AppBundle\Entity\AuthoredInterface;
 use AppBundle\Jecoute\SurveyTypeEnum;
@@ -11,6 +12,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\Jecoute\LocalSurveyRepository")
+ *
+ * @Algolia\Index(autoIndex=false)
  */
 class LocalSurvey extends Survey implements AuthoredInterface
 {
