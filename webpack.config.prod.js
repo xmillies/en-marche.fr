@@ -78,7 +78,7 @@ module.exports = {
         function symfonyAssetsVersion() {
             this.plugin('done', (stats) => {
                 fs.writeFile(
-                    path.join(__dirname, 'app/config', 'assets_version.yml'),
+                    path.join(__dirname, 'config/packages/', 'assets_version.yaml'),
                     `parameters:\n    assets_hash: ${stats.hash}\n`
                 );
             });
