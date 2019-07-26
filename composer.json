@@ -36,19 +36,16 @@
         "danhunsaker/flysystem-redis": "^1.0",
         "doctrine/doctrine-bundle": "^1.11",
         "doctrine/doctrine-cache-bundle": "^1.2",
-        "doctrine/doctrine-fixtures-bundle": "^2.3",
         "doctrine/doctrine-migrations-bundle": "^1.0",
         "doctrine/orm": "^2.5",
         "egulias/email-validator": "^2.1",
         "endroid/qr-code-bundle": "^3.3",
         "exercise/htmlpurifier-bundle": "^1.0",
         "facebook/graph-sdk": "^5.4",
-        "fzaninotto/faker": "^1.6",
         "geoip2/geoip2": "^2.4",
         "h4cc/wkhtmltoimage-amd64": "^0.12.4",
         "h4cc/wkhtmltopdf-amd64": "^0.12.4",
         "imagine/imagine": "^0.6.3",
-        "incenteev/composer-parameter-handler": "^2.0",
         "jms/serializer-bundle": "^2.1",
         "knplabs/knp-snappy-bundle": "^1.5",
         "knplabs/knp-time-bundle": "^1.7",
@@ -88,6 +85,7 @@
         "symfony/config": "3.4.*",
         "symfony/dependency-injection": "3.4.*",
         "symfony/doctrine-bridge": "3.4.*",
+        "symfony/dotenv": "^4.3",
         "symfony/event-dispatcher": "3.4.*",
         "symfony/expression-language": "3.4.*",
         "symfony/http-foundation": "3.4.*",
@@ -128,8 +126,10 @@
         "behatch/contexts": "^2.7",
         "coduo/php-matcher": "^2.2",
         "dama/doctrine-test-bundle": "^5.0",
+        "doctrine/doctrine-fixtures-bundle": "^2.3",
         "fabpot/goutte": "^3.2",
         "friendsofphp/php-cs-fixer": "^2.10.0",
+        "fzaninotto/faker": "^1.8",
         "liip/functional-test-bundle": "^1.8",
         "pedrotroller/php-cs-custom-fixer": "2.11.0",
         "phpunit/phpunit": "^6.2",
@@ -140,7 +140,6 @@
     },
     "scripts": {
         "symfony-scripts": [
-            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
@@ -161,8 +160,8 @@
         "symfony-web-dir": "web",
         "symfony-tests-dir": "tests",
         "symfony-assets-install": "relative",
-        "incenteev-parameters": {
-            "file": "app/config/parameters.yml"
+        "symfony": {
+            "require": "3.4.*"
         }
     },
     "conflict": {

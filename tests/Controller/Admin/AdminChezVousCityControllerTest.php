@@ -2,6 +2,7 @@
 
 namespace Tests\AppBundle\Controller\Admin;
 
+use Algolia\AlgoliaSearchBundle\Indexer\Indexer;
 use AppBundle\Entity\ChezVous\City;
 use AppBundle\Repository\ChezVous\CityRepository;
 use Doctrine\ORM\EntityRepository;
@@ -155,6 +156,6 @@ class AdminChezVousCityControllerTest extends WebTestCase
 
     private function getIndexer(): DummyIndexer
     {
-        return $this->client->getContainer()->get('algolia.indexer');
+        return $this->client->getContainer()->get(Indexer::class);
     }
 }

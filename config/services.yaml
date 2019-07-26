@@ -1,11 +1,6 @@
-imports:
-    - { resource: parameters.yml }
-    - { resource: services/ }
-
 parameters:
     locale:                               fr
     locales:                              [fr, en]
-    assets_hash:                          ~
     pattern_uuid:                         '[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}'
     pattern_sha1:                         '[0-9A-Fa-f]{40}'
     pattern_coordinate:                   '-?\d+(\.\d{1,7})?'
@@ -32,3 +27,13 @@ parameters:
     image_max_length:                     450px
     webhook.email_subscriptions_secret:   "%env(APP_EMAIL_SUBSCRIPTIONS_WEBHOOK_SECRET)%"
     sonata.exporter.writer.csv.with_bom:  true
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Algolia\AlgoliaSearchBundle\Indexer\Indexer: '@algolia.indexer'
+
+    AppBundle\Map\StaticMapProviderInterface: '@app.map.google_maps_static_provider'
