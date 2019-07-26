@@ -41,5 +41,4 @@ return [
     steevanb\DoctrineStats\Bridge\DoctrineStatsBundle\DoctrineStatsBundle::class => ['dev' => true, 'test' => true, 'dev_front' => true],
     Liip\FunctionalTestBundle\LiipFunctionalTestBundle::class => ['test' => true],
     DAMA\DoctrineTestBundle\DAMADoctrineTestBundle::class => ['test' => true],
-    AppBundle\AppBundle::class => ['all' => true],
 ];

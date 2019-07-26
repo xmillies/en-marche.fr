@@ -20,7 +20,6 @@
         <!-- Algolia -->
         <service id="AppBundle\Algolia\AlgoliaIndexedEntityManager" />
         <service id="AppBundle\Algolia\ManualIndexer" />
-        <service id="AppBundle\Command\AlgoliaSynchronizeCommand" />
 
         <!-- Content -->
         <service class="AppBundle\Content\ClarificationFactory" />
@@ -79,8 +78,6 @@
         </prototype>
 
         <!-- Donation -->
-        <service id="AppBundle\Command\DonationUpdateReferenceCommand" />
-        <service id="AppBundle\Command\ImportDonationCoordinatesCommand" />
         <service id="AppBundle\Validator\PayboxSubscriptionValidator" />
         <service id="AppBundle\Validator\UniqueDonationSubscriptionValidator" />
         <service id="AppBundle\Validator\MaxFiscalYearDonationValidator" />
@@ -108,7 +105,6 @@
         <service id="AppBundle\Donation\PayboxFormFactory" />
 
         <!-- Membership -->
-        <service id="AppBundle\Command\RemindUnconfirmedMembershipCommand"/>
         <service id="AppBundle\Membership\MembershipRegistrationProcess"/>
         <service id="AppBundle\Membership\AdherentChangeEmailHandler">
             <argument key="$mailer" type="service" id="app.mailer.transactional" />
@@ -146,7 +142,6 @@
         <!-- ApplicationRequest -->
         <service id="AppBundle\ApplicationRequest\ApplicationRequestHandler" />
         <service id="AppBundle\ApplicationRequest\ApplicationRequestRepository" />
-        <service id="AppBundle\Command\ApplicationRequestsUpdateMissingTags" />
         <service id="AppBundle\ApplicationRequest\Listener\UpdateAdherentRelationSubscriber" />
         <service id="AppBundle\ApplicationRequest\Listener\HideDuplicateRequestsSubscriber" />
         <service id="AppBundle\ApplicationRequest\Listener\SendConfirmationRequestSubscriber">
@@ -217,8 +212,6 @@
         <service id="AppBundle\Procuration\ProcurationSession" />
 
         <!-- Referent -->
-        <service id="AppBundle\Command\ReferentTagImportCommand"/>
-        <service id="AppBundle\Command\ReferentTagInitializeCommitteeEvent"/>
         <service id="AppBundle\Referent\ReferentTagManager" />
         <service id="AppBundle\Referent\ManagedCommitteesExporter" />
         <service id="AppBundle\Referent\ManagedCitizenProjectsExporter" />
@@ -227,8 +220,6 @@
         <service id="AppBundle\Form\ReferentPersonLinkForCoReferentType" />
 
         <!-- J'écoute -->
-        <service id="AppBundle\Command\ImportJecouteSurveysCommand" />
-        <service id="AppBundle\Command\UpdateLocalSurveysTagsCommand" />
         <service id="AppBundle\Form\Jecoute\DataSurveyFormType" />
         <service id="AppBundle\Form\Jecoute\SurveyFormType" />
         <service id="AppBundle\Validator\SurveyQuestionTypeChoiceValidator" />
@@ -293,8 +284,6 @@
         </service>
 
         <!-- Timeline -->
-        <service id="AppBundle\Command\TimelineImportCommand"/>
-        <service id="AppBundle\Command\TimelineSynchronizeCommand"/>
         <service id="AppBundle\Form\EventListener\EmptyTranslationRemoverListener">
             <argument>%locales%</argument>
             <argument>%locale%</argument>
@@ -306,28 +295,12 @@
         </service>
 
         <!-- Command -->
-        <service id="AppBundle\Command\ApiScheduleCommitteeCreationCommand" />
-        <service id="AppBundle\Command\ApiScheduleEventCreationCommand" />
-        <service id="AppBundle\Command\DonationCancelCommand" />
-        <service id="AppBundle\Command\InitializeEmailSubscriptionHistoryCommand"/>
-        <service id="AppBundle\Command\ImportDistrictsCommand"/>
-        <service id="AppBundle\Command\ImportElectedRepresentativesRegisterCommand"/>
         <service id="AppBundle\Command\NotifyIdeaAuthorCommand">
             <argument key="$mailer" type="service" id="app.mailer.transactional"/>
         </service>
         <service id="AppBundle\Command\NotifyIdeaAuthorAboutContributionsCommand">
             <argument key="$mailer" type="service" id="app.mailer.transactional"/>
         </service>
-        <service id="AppBundle\Command\BindDeputiesToDistrictsCommand"/>
-        <service id="AppBundle\Command\MigrateSubscriptionTypeCommand"/>
-        <service id="AppBundle\Command\MailchimpSyncAllAdherentsCommand"/>
-        <service id="AppBundle\Command\MailchimpReportDownloadCommand" />
-        <service id="AppBundle\Command\MailchimpSyncAllMembershipsCommand"/>
-        <service id="AppBundle\Command\MailchimpSyncAllNewsletterCommand" />
-        <service id="AppBundle\Command\MailchimpSyncAllCandidatesCommand" />
-        <service id="AppBundle\Command\MailchimpSyncAllEventsCommand"/>
-        <service id="AppBundle\Command\MailchimpUpdateAdherentCommand"/>
-        <service id="AppBundle\Command\MailchimpDeleteContactsFromCsvCommand"/>
         <service id="AppBundle\Command\MailchimpCreateTagFromReferentTagCommand">
             <argument type="service" key="$client" id="csa_guzzle.client.mailchimp_api" />
             <argument type="string" key="$mailchimpListId">%env(MAILCHIMP_MEMBER_LIST_ID)%</argument>
@@ -358,7 +331,6 @@
         <service id="AppBundle\History\EmailSubscriptionHistoryHandler" />
 
         <!-- Republican Silence -->
-        <service id="AppBundle\Command\RepublicanSilenceCloseEventCommand" />
         <service id="AppBundle\RepublicanSilence\CheckRepublicanSilenceListener" />
         <service id="AppBundle\RepublicanSilence\RepublicanSilenceManager">
             <argument type="service" key="$cache">
@@ -369,8 +341,6 @@
         </service>
 
         <!-- Deputy -->
-        <service id="AppBundle\Command\CreateReferentTagsForDistrictsCommand" />
-        <service id="AppBundle\Command\InitializeReferentTagsForDistrictsOnAdherentsCommand" />
         <service id="AppBundle\Deputy\Subscriber\BindAdherentDistrictSubscriber" />
         <service id="AppBundle\Deputy\DistrictLoader" public="true" />
         <service id="AppBundle\Deputy\LightFileDistrictLoader" public="true" />
@@ -632,12 +602,7 @@
             <argument type="service" id="app.mailer.transactional" />
         </service>
 
-        <!-- Command -->
-        <service id="AppBundle\Command\ImportAssessorsCommand" />
-        <service id="AppBundle\Command\ImportVotePlacesCommand" />
-
         <!-- ChezVous -->
-        <prototype namespace="AppBundle\Command\ChezVous\" resource="../../src/Command/ChezVous/*" />
         <prototype namespace="AppBundle\Form\Admin\ChezVous\" resource="../../src/Form/Admin/ChezVous/*" />
         <prototype namespace="AppBundle\ChezVous\" resource="../../src/ChezVous/*" />
         <service id="AppBundle\Validator\ChezVous\MeasurePayloadValidator" />
