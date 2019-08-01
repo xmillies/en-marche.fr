@@ -9,7 +9,7 @@ module.exports = {
         kernel: ['kernel'],
     },
     output: {
-        path: path.join(__dirname, './web/built'),
+        path: path.join(__dirname, './public/built'),
         publicPath: '/built/',
         filename: '[name].js',
         chunkFilename: '[name].js',
