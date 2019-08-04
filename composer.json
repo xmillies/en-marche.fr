@@ -70,7 +70,6 @@
         "ramsey/uuid-doctrine": "^1.2",
         "sabre/dav": "^3.2",
         "scheb/two-factor-bundle": "^2.8",
-        "sensio/distribution-bundle": "^5.0",
         "sensio/framework-extra-bundle": "4.0.x-dev",
         "sensiolabs/security-checker": "^5.0",
         "sentry/sentry": "^1.6",
@@ -88,6 +87,7 @@
         "symfony/dotenv": "^4.3",
         "symfony/event-dispatcher": "3.4.*",
         "symfony/expression-language": "3.4.*",
+        "symfony/flex": "^1.4",
         "symfony/http-foundation": "3.4.*",
         "symfony/http-kernel": "3.4.*",
         "symfony/inflector": "3.4.*",
@@ -139,29 +139,28 @@
         "symfony/web-profiler-bundle": "3.4.*"
     },
     "scripts": {
-        "symfony-scripts": [
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
-        ],
         "post-install-cmd": [
             "Fuz\\Symfony\\Collection\\ScriptHandler::postInstall",
-            "@symfony-scripts"
+            "@auto-scripts"
         ],
         "post-update-cmd": [
             "Fuz\\Symfony\\Collection\\ScriptHandler::postUpdate",
-            "@symfony-scripts"
-        ]
+            "@auto-scripts"
+        ],
+        "auto-scripts": {
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd",
+            "security-checker security:check": "script"
+        }
     },
     "extra": {
-        "symfony-app-dir": "app",
-        "symfony-bin-dir": "bin",
-        "symfony-var-dir": "var",
-        "symfony-web-dir": "public",
-        "symfony-tests-dir": "tests",
-        "symfony-assets-install": "relative",
         "symfony": {
             "require": "3.4.*"
+        },
+        "endroid": {
+            "installer": {
+                "enabled": false
+            }
         }
     },
     "conflict": {

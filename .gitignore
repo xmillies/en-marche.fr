@@ -8,9 +8,6 @@
 /templates/amp/style.css.twig
 /templates/jquery.collection.html.twig
 /build/
-/var/
-/vendor/
-/public/bundles/
 /public/built/
 /public/js/jquery.collection.js
 /public/select2/
@@ -23,11 +20,39 @@
 /supervisord.log
 /supervisord.pid
 /yarn-error.log
-/.php_cs
 /.docker-dev.md5
 /behat.yml
 /docker-dev.lock
 node_modules
+
+###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
 /.env.*.local
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
+
+###> behat/symfony2-extension ###
+behat.yml
+###< behat/symfony2-extension ###
+
+###> friendsofphp/php-cs-fixer ###
+/.php_cs
+/.php_cs.cache
+###< friendsofphp/php-cs-fixer ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
+
+###> symfony/phpunit-bridge ###
+.phpunit
+/phpunit.xml
+###< symfony/phpunit-bridge ###

@@ -1,99 +1,9 @@
-#
-# Health
-#
-app_health:
-    host:     "%app_host%"
-    resource: "../src/Controller/HealthController.php"
-    type:     "annotation"
-
-#
-# Assets
-#
-app_assets:
-    resource: "../src/Controller/AssetsController.php"
-    type:     "annotation"
-
-#
-# Mooc
-#
-app_mooc:
-    resource: "../src/Controller/MoocController.php"
-    type:     "annotation"
-
-#
-# User uploaded documents
-#
-app_documents:
-    resource: "../src/Controller/UploadDocumentController.php"
-    type:     "annotation"
-
-#
-# API Platform
-#
-api_platform:
-    resource: .
-    type: api_platform
-    prefix: "%api_path_prefix%"
-
 swagger_ui:
     path: "%api_path_prefix%/swagger"
     controller: api_platform.swagger.action.ui
 
-#
-# API
-#
-app_api:
-    host:     "%app_host%"
-    resource: "../src/Controller/Api"
-    type:     "annotation"
-    prefix:   "%api_path_prefix%"
-    defaults:
-        _format: 'json'
-
 api_login_check:
     path: "%api_path_prefix%/login_check"
-
-#
-# API Legislatives
-#
-app_legislatives_api:
-    host:     "{app_domaines}"
-    resource: "../src/Controller/Api/LegislativesController.php"
-    type:     "annotation"
-    prefix:   "%api_path_prefix%"
-    defaults:
-        _format: 'json'
-    requirements:
-        app_domaines: "%app_host%|%legislatives_host%"
-
-#
-# OAuth
-#
-app_oauth:
-    host:     "%app_host%"
-    resource: "../src/Controller/OAuth"
-    type:     "annotation"
-    prefix:   "/oauth/v2"
-
-#
-# Admin panel
-#
-admin_dashboard:
-    host:     "%app_host%"
-    resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
-    prefix:   "/admin"
-
-admin_crud:
-    host:     "%app_host%"
-    resource: .
-    type:     sonata_admin
-    prefix:   "/admin"
-
-app_admin:
-    host:     "%app_host%"
-    resource: "../src/Controller/Admin"
-    type:     "annotation"
-    prefix:   "/admin"
 
 #
 # En Marche app
@@ -103,38 +13,10 @@ lexik_paybox:
     resource: "@LexikPayboxBundle/Resources/config/routing.yml"
     prefix:   "/don"
 
-# This route must be loaded first to prevent another route to match his path
-map_events:
-    host:    "%app_host%"
-    path:    /evenements/la-carte
-    methods: GET
-    defaults: { _controller: 'AppBundle\Controller\EnMarche\MapController:eventsAction' }
-
 react_citizen_projects:
     host:     "%app_host%"
     resource: "app.react_routing_loader:loadRoutes"
     type:     "service"
-
-app_enmarche:
-    host:     "%app_host%"
-    resource: "../src/Controller/EnMarche"
-    type:     "annotation"
-
-#
-# AMP pages
-#
-app_enmarche_amp:
-    host:     "%amp_host%"
-    resource: "../src/Controller/Amp"
-    type:     "annotation"
-
-#
-# Legislatives app
-#
-app_legislatives:
-    host:     "%legislatives_host%"
-    resource: "../src/Controller/Legislatives"
-    type:     "annotation"
 
 #
 # Legacy

@@ -330,7 +330,7 @@ security:
             pattern: ^/admin
             provider: admins_db
             anonymous:
-                secret: '%env(SECRET)%'
+                secret: '%env(APP_SECRET)%'
             form_login:
                 login_path: app_admin_login
                 check_path: app_admin_login_check
@@ -357,7 +357,7 @@ security:
             switch_user:
                 provider: users_db
             anonymous:
-                secret: '%env(SECRET)%'
+                secret: '%env(APP_SECRET)%'
             logout:
                 path: logout
                 target: homepage

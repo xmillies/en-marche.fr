@@ -1,0 +1,10 @@
+admin_area:
+    host: "%app_host%"
+    resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
+    prefix: /admin
+
+_sonata_admin:
+    host: "%app_host%"
+    resource: .
+    type: sonata_admin
+    prefix: /admin

@@ -13,8 +13,6 @@ doctrine:
             1002: "SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))"
         schema_filter: '#^(?!ideas_workshop_idea_notification_dates)#'
         types:
-            uuid:           Ramsey\Uuid\Doctrine\UuidType
-            phone_number:   Misd\PhoneNumberBundle\Doctrine\DBAL\Types\PhoneNumberType
             geo_point:      AppBundle\Doctrine\DBAL\Types\GeoPointType
             geometry:       CrEOF\Spatial\DBAL\Types\GeometryType
             polygon:        CrEOF\Spatial\DBAL\Types\Geometry\PolygonType
