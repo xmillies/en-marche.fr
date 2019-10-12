@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use AppBundle\AdherentMessage\StaticSegmentInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -32,6 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class AdherentSegment implements AuthorInterface, StaticSegmentInterface
 {
     use EntityIdentityTrait;
+    use TimestampableEntity;
 
     /**
      * @var string

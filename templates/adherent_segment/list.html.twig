@@ -1,0 +1,53 @@
+{% extends base_template %}
+
+{% block list_main_block %}
+    <table class="datagrid__table-manager">
+        <thead>
+            <tr>
+                <th width="150">Nom de la liste</th>
+                <th width="100">Nombre d'adhérents</th>
+                <th width="100">Date de création</th>
+                <th width="50">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for list in lists %}
+            <tr>
+                <td>{{ list.label }}</td>
+                <td>{{ list.memberIds|length }}</td>
+                <td>{{ list.createdAt|localizeddate('none', 'none', 'fr_FR', null, "d MMMM Y à HH:mm") }}</td>
+                <td>
+                    <div class="action-menu-oval">
+                        <a href="javascript:void(0);">
+                            <span class="oval"></span>
+                            <span class="oval"></span>
+                            <span class="oval"></span>
+                        </a>
+                        <div class="action-dropdown-menu--bounce">
+                            <div class="action-dropdown-menu--content">
+                                <a class="row-action text--blue--dark link--no-decor" href="#">Renommer</a>
+                                <a class="row-action text--dark link--no-decor" href="#">Supprimer</a>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6" class="text--center">
+                    <img src="{{ asset('/images/icons/icn_no-result.svg') }}" class="icn--no-result" width="30" />
+                    Vous n'avez aucune liste
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% if messages.count %}
+        {% include 'components/_modern_pagination.html.twig' with {
+            current_page: messages.currentPage,
+            total_pages: messages.lastPage,
+            pagination_route_params: route_params|default({})|merge(message_filter_status ? {status: message_filter_status} : {})
+        } %}
+    {% endif %}
+{% endblock %}

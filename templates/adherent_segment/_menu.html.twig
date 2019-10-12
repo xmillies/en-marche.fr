@@ -1,0 +1,15 @@
+<div class="datagrid__table__tabs__items">
+    {% if app.request.attributes.get('_route') == 'app_referent_users' %}
+        <h3 class="active">Mes adhérents</h3>
+        <span class="separator"></span>
+        <h3 class="">
+            <a href="#">Mes listes de diffusion</a>
+        </h3>
+    {% else %}
+        <h3 class="">
+            <a href="#">Mes adhérents</a>
+        </h3>
+        <span class="separator"></span>
+        <h3 class="active">Mes liste de diffusion</h3>
+    {% endif %}
+</div>

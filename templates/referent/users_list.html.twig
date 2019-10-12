@@ -29,8 +29,25 @@
 {% endblock %}
 
 {% block referent_content %}
+    <h3 class="b__nudge--bottom-medium">Adhérents</h3>
+
     <div class="datagrid__pre-table b__nudge--bottom-larger">
-        <h3>Adhérents</h3>
+        <div class="datagrid__table__tabs__items">
+            {% if app.request.attributes.get('_route') == 'app_referent_users' %}
+                <h3 class="active">Mes adhérents</h3>
+                <span class="separator"></span>
+                <h3 class="">
+                    <a href="#">Mes listes de diffusion</a>
+                </h3>
+            {% else %}
+                <h3 class="">
+                    <a href="{{ path("app_#{space_name}_#{target_sub_space}_running_mate_list") }}">Mes adhérents</a>
+                </h3>
+                <span class="separator"></span>
+                <h3 class="active">Mes liste de diffusion</h3>
+            {% endif %}
+        </div>
+
         {% if total_count %}
             <span class="datagrid__count">
                 <span>{{ results.totalItems|number_format(0, ',', ' ') }}</span> sur {{ total_count|number_format(0, ',', ' ') }} adhérent{{ total_count > 1 ? 's' : '' }}
