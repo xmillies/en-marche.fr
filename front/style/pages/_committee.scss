@@ -45,6 +45,11 @@
         }
     }
 
+    &__header__actions {
+        width: 285px;
+        text-align: left;
+    }
+
     &__host {
         &__nav {
             @include text--body;
@@ -274,14 +279,6 @@
             padding: 30px 0;
             border-bottom: 1px solid $gray--light;
         }
-
-        li > a {
-            font-weight: 100;
-
-            &:hover {
-                padding-bottom: 2px;
-            }
-        }
     }
 
     &__card {
@@ -330,8 +327,6 @@
         // An event within the timeline
         background: $gray--lighter;
         height: 200px;
-        max-width: 750px;
-        margin: 0 auto;
         display: flex;
         margin-top: 20px;
 
