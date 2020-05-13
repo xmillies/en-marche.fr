@@ -74,7 +74,6 @@
         "ramsey/uuid-doctrine": "^1.2",
         "sabre/dav": "^3.2",
         "scheb/two-factor-bundle": "^4.11",
-        "sensio/distribution-bundle": "^5.0",
         "sensio/framework-extra-bundle": "4.0.x-dev",
         "sensiolabs/security-checker": "^5.0",
         "sentry/sentry": "^1.6",
@@ -93,6 +92,7 @@
         "symfony/dotenv": "^4.4",
         "symfony/event-dispatcher": "3.4.*",
         "symfony/expression-language": "3.4.*",
+        "symfony/flex": "^1.6",
         "symfony/http-client": "4.3.5",
         "symfony/http-foundation": "3.4.*",
         "symfony/http-kernel": "3.4.*",
@@ -144,18 +144,19 @@
         "symfony/web-profiler-bundle": "3.4.*"
     },
     "scripts": {
-        "symfony-scripts": [
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
-        ],
+        "auto-scripts": {
+            "cache:clear": "symfony-cmd",
+            "assets:install --symlink --relative %PUBLIC_DIR%": "symfony-cmd",
+            "security-checker security:check": "script",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+        },
         "post-install-cmd": [
-            "Fuz\\Symfony\\Collection\\ScriptHandler::postInstall",
-            "@symfony-scripts"
+            "@auto-scripts",
+            "Fuz\\Symfony\\Collection\\ScriptHandler::postInstall"
         ],
         "post-update-cmd": [
-            "Fuz\\Symfony\\Collection\\ScriptHandler::postUpdate",
-            "@symfony-scripts"
+            "@auto-scripts",
+            "Fuz\\Symfony\\Collection\\ScriptHandler::postUpdate"
         ]
     },
     "extra": {
@@ -167,6 +168,11 @@
         "symfony-assets-install": "relative",
         "symfony": {
             "require": "3.4.*"
+        },
+        "endroid": {
+            "installer": {
+                "enabled": false
+            }
         }
     },
     "replace": {

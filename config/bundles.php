@@ -37,9 +37,10 @@ return [
     Algolia\AlgoliaSearchBundle\AlgoliaAlgoliaSearchBundle::class => ['prod' => true],
     Symfony\Bundle\DebugBundle\DebugBundle::class => ['dev' => true, 'test' => true, 'dev_front' => true],
     Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['dev' => true, 'test' => true, 'dev_front' => true],
-    Sensio\Bundle\DistributionBundle\SensioDistributionBundle::class => ['dev' => true, 'test' => true, 'dev_front' => true],
     steevanb\DoctrineStats\Bridge\DoctrineStatsBundle\DoctrineStatsBundle::class => ['dev' => true, 'test' => true, 'dev_front' => true],
     Liip\FunctionalTestBundle\LiipFunctionalTestBundle::class => ['test' => true],
     DAMA\DoctrineTestBundle\DAMADoctrineTestBundle::class => ['test' => true],
     Exporter\Bridge\Symfony\Bundle\SonataExporterBundle::class => ['all' => true],
+    Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle::class => ['all' => true],
+    Sonata\DatagridBundle\SonataDatagridBundle::class => ['all' => true],
 ];
