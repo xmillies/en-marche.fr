@@ -53,3 +53,5 @@ services:
 
     App\Adherent\Unregistration\Handlers\:
         resource: ../src/Adherent/Unregistration/Handlers/
+
+    Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider: ~

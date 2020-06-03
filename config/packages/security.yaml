@@ -394,6 +394,11 @@ security:
                 provider: users_db
             anonymous:
                 secret: '%env(SECRET)%'
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 1209600 # 2 weeks in seconds
+                path: /
+                token_provider: Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider
             logout:
                 path: logout
                 target: homepage
