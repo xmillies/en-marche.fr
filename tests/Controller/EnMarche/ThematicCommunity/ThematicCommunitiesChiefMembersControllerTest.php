@@ -98,14 +98,14 @@ class ThematicCommunitiesChiefMembersControllerTest extends WebTestCase
         $this->assertContains('Berthoux Gisele', $crawler->filter('table tbody tr.referent__item')->eq(3)->filter('td')->first()->text());
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->init();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->kill();
 

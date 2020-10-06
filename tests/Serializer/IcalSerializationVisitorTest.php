@@ -14,7 +14,7 @@ class IcalSerializationVisitorTest extends TestCase
      */
     protected $visitor;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->propertyNamingStrategy = $this->createMock(PropertyNamingStrategyInterface::class);
 

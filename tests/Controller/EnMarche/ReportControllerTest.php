@@ -25,14 +25,14 @@ class ReportControllerTest extends WebTestCase
 {
     use ControllerTestTrait;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->init();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->kill();
 
@@ -140,11 +140,11 @@ class ReportControllerTest extends WebTestCase
 
     private function getUriTypeFromReportCLass($reportClass): string
     {
-        $this->assertContains($reportClass, ReportType::LIST);
+        $this->assertStringContainsString($reportClass, ReportType::LIST);
 
         $type = \array_search($reportClass, ReportType::LIST, true);
 
-        $this->assertContains($type, ReportType::URI_MAP);
+        $this->assertStringContainsString($type, ReportType::URI_MAP);
 
         return \array_search($type, ReportType::URI_MAP, true);
     }

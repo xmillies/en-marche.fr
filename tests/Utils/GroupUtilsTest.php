@@ -114,14 +114,14 @@ class GroupUtilsTest extends WebTestCase
         GroupUtils::getUuidsFromAdherents('this is not an iterable value');
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->container = $this->getContainer();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->kill();
 

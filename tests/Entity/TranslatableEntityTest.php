@@ -22,8 +22,8 @@ class TranslatableEntityTest extends TestCase
 
         $translations = $translatable->getTranslations();
 
-        $this->assertContains($french, $translations);
-        $this->assertContains($english, $translations);
+        $this->assertStringContainsString($french, $translations);
+        $this->assertStringContainsString($english, $translations);
         $this->assertNotContains($german, $translations);
         $this->assertNotContains($italian, $translations);
     }

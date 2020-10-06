@@ -68,7 +68,7 @@ final class UpdateFranceCommandTest extends WebTestCase
         $this->assertSame(0, $exitCode);
 
         $output = $commandTester->getDisplay();
-        $this->assertContains('Nothing was persisted in database', $output);
+        $this->assertStringContainsString('Nothing was persisted in database', $output);
 
         // @todo remove it once it's present in fixtures
         $this->assertFalse($this->exists(Country::class, 'FR'));
@@ -106,7 +106,7 @@ final class UpdateFranceCommandTest extends WebTestCase
         $this->assertSame(0, $exitCode);
 
         $output = $commandTester->getDisplay();
-        $this->assertNotContains('Nothing was persisted in database', $output);
+        $this->assertStringNotContainsString('Nothing was persisted in database', $output);
 
         $this->assertTrue($this->exists(Country::class, 'FR'));
 

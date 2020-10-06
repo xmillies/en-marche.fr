@@ -127,7 +127,7 @@ class PoliticalCommitteeControllerTest extends WebTestCase
 
         $this->client->followRedirect();
 
-        self::assertContains($message->getContent().' test', $this->client->getResponse()->getContent());
+        self::assertStringContainsString($message->getContent().' test', $this->client->getResponse()->getContent());
     }
 
     public function testDeleteMessage()
@@ -139,7 +139,7 @@ class PoliticalCommitteeControllerTest extends WebTestCase
 
         $this->isSuccessful($this->client->getResponse());
 
-        self::assertContains($message->getContent(), $this->client->getResponse()->getContent());
+        self::assertStringContainsString($message->getContent(), $this->client->getResponse()->getContent());
 
         $form = $crawler->selectButton('delete_entity_delete')->form();
         $this->client->submit($form);
@@ -149,14 +149,14 @@ class PoliticalCommitteeControllerTest extends WebTestCase
         self::assertNotContains($message->getContent(), $this->client->getResponse()->getContent());
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->init();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->kill();
 

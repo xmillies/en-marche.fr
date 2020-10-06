@@ -139,7 +139,7 @@ class SummaryManagerControllerTest extends WebTestCase
         $this->assertSummaryCompletion(15, $crawler);
         $this->assertSame('L\'expérience a bien été sauvegardée.', $crawler->filter('.flash__inner')->text());
         $this->assertCount(1, $experience = $crawler->filter('.cv__experience > div'));
-        $this->assertContains(strtoupper($position), $experience->filter('h3')->text());
+        $this->assertStringContainsString(strtoupper($position), $experience->filter('h3')->text());
         $this->assertSame($company, $experience->filter('h4')->text());
     }
 
@@ -363,7 +363,7 @@ class SummaryManagerControllerTest extends WebTestCase
         $this->assertStatusCode(Response::HTTP_OK, $this->client);
         $this->assertCount(3, $crawler->filter('.cv__training'));
         $this->assertSummaryCompletion(100, $crawler);
-        $this->assertContains($diploma, $crawler->filter('.cv__training h3')->eq(0)->text());
+        $this->assertStringContainsString($diploma, $crawler->filter('.cv__training h3')->eq(0)->text());
 
         $summary = $this->getSummaryRepository()->findOneForAdherent($this->getAdherent(LoadAdherentData::ADHERENT_4_UUID));
 
@@ -880,7 +880,7 @@ class SummaryManagerControllerTest extends WebTestCase
         $this->assertCount(3, $wishes = $missions->filter('.summary-wish'));
 
         for ($i = 0; $i < $wishes->count(); ++$i) {
-            $this->assertContains(trim($wishes->eq($i)->text()), [
+            $this->assertStringContainsString(trim($wishes->eq($i)->text()), [
                 'Me former à l\'action politique et citoyenne',
                 'Faire remonter les opinions du terrain',
                 'Expérimenter des projets concrets',
@@ -1279,14 +1279,14 @@ class SummaryManagerControllerTest extends WebTestCase
         $this->assertStatusCode(Response::HTTP_OK, $this->client);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->init();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->kill();
 

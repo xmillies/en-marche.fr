@@ -20,8 +20,8 @@ class CommitteeMembershipTest extends TestCase
         $privileges = CommitteeMembership::getHostPrivileges();
 
         $this->assertCount(2, $privileges);
-        $this->assertContains(CommitteeMembership::COMMITTEE_SUPERVISOR, $privileges);
-        $this->assertContains(CommitteeMembership::COMMITTEE_HOST, $privileges);
+        $this->assertStringContainsString(CommitteeMembership::COMMITTEE_SUPERVISOR, $privileges);
+        $this->assertStringContainsString(CommitteeMembership::COMMITTEE_HOST, $privileges);
     }
 
     public function testCreateSupervisorMembership()
